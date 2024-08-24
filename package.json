@@ -1,0 +1,15 @@
+{
+  "name": "easy-proxy-ollama-https",
+  "version": "1.0.0",
+  "description": "HTTPS proxy for Ollama",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "cors": "^2.8.5",
+    "node-fetch": "^3.2.0"
+  },
+  "type": "module"
+}

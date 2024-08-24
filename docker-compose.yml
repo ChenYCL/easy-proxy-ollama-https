@@ -1,0 +1,32 @@
+version: '3.8'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "11435:11434"
+    volumes:
+      - ./ssl:/usr/src/app/ssl
+      - ./index.js:/usr/src/app/index.js
+    environment:
+      - NODE_ENV=production
+      - USE_HTTPS=true
+    command: >
+      sh -c '
+        if [ ! -f /usr/src/app/ssl/rootCA.pem ]; then
+          mkdir -p /usr/src/app/ssl &&
+          openssl genrsa -out /usr/src/app/ssl/rootCA.key 4096 &&
+          openssl req -x509 -new -nodes -key /usr/src/app/ssl/rootCA.key -sha256 -days 1024 -out /usr/src/app/ssl/rootCA.pem -subj "/CN=Local Root CA" &&
+          openssl genrsa -out /usr/src/app/ssl/localhost.key 2048 &&
+          openssl req -new -key /usr/src/app/ssl/localhost.key -out /usr/src/app/ssl/localhost.csr -subj "/CN=localhost" &&
+          echo "subjectAltName=DNS:localhost,IP:127.0.0.1" > /usr/src/app/ssl/extfile.cnf &&
+          openssl x509 -req -in /usr/src/app/ssl/localhost.csr -CA /usr/src/app/ssl/rootCA.pem -CAkey /usr/src/app/ssl/rootCA.key -CAcreateserial -out /usr/src/app/ssl/localhost.crt -days 500 -sha256 -extfile /usr/src/app/ssl/extfile.cnf
+        fi &&
+        node index.js
+      '
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  ssl:
