@@ -12,7 +12,7 @@ This project provides an HTTPS proxy for Ollama, allowing secure communication w
 
 1. Clone this repository:
    ```
-   git clone git@github.com:ChenYCL/easy-proxy-ollama-https.git
+   git clone https://github.com/ChenYCL/easy-proxy-ollama-https.git
    cd easy-proxy-ollama-https
    ```
 
